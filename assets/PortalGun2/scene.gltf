@@ -1,0 +1,445 @@
+{
+  "accessors": [
+    {
+      "bufferView": 2,
+      "componentType": 5126,
+      "count": 50196,
+      "max": [
+        0.16927194595336914,
+        0.13980171084403992,
+        0.45012277364730835
+      ],
+      "min": [
+        -0.0668039321899414,
+        -0.05413499474525452,
+        -0.01245349645614624
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 602352,
+      "componentType": 5126,
+      "count": 50196,
+      "max": [
+        0.9999210834503174,
+        0.9999716877937317,
+        0.9998059868812561
+      ],
+      "min": [
+        -0.9999789595603943,
+        -0.9999778866767883,
+        -0.999914288520813
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 3,
+      "componentType": 5126,
+      "count": 50196,
+      "max": [
+        1.0,
+        0.9999837279319763,
+        0.9999980330467224,
+        1.0
+      ],
+      "min": [
+        -0.9999781250953674,
+        -0.9999995231628418,
+        -0.9999984502792358,
+        -1.0
+      ],
+      "type": "VEC4"
+    },
+    {
+      "bufferView": 1,
+      "componentType": 5126,
+      "count": 50196,
+      "max": [
+        0.9994999766349792,
+        0.9997329711914063
+      ],
+      "min": [
+        0.0005000000237487257,
+        0.0005000000237487257
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 401568,
+      "componentType": 5126,
+      "count": 50196,
+      "max": [
+        0.9994999766349792,
+        0.9997329711914063
+      ],
+      "min": [
+        0.0005000000237487257,
+        0.0005000000237487257
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 803136,
+      "componentType": 5126,
+      "count": 50196,
+      "max": [
+        0.9994999766349792,
+        0.9997329711914063
+      ],
+      "min": [
+        0.0005000000237487257,
+        0.0005000000237487257
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 1204704,
+      "componentType": 5126,
+      "count": 50196,
+      "max": [
+        0.9994999766349792,
+        0.9997329711914063
+      ],
+      "min": [
+        0.0005000000237487257,
+        0.0005000000237487257
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 0,
+      "componentType": 5125,
+      "count": 170670,
+      "type": "SCALAR"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 1204704,
+      "componentType": 5126,
+      "count": 1750,
+      "max": [
+        0.06824827194213867,
+        0.09838852286338806,
+        0.3019859194755554
+      ],
+      "min": [
+        -0.007332801818847656,
+        0.013986170291900635,
+        0.12064176797866821
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 1225704,
+      "componentType": 5126,
+      "count": 1750,
+      "max": [
+        0.9915167093276978,
+        0.9999606013298035,
+        0.9690956473350525
+      ],
+      "min": [
+        -0.9915192723274231,
+        -0.9999608397483826,
+        -0.9690364599227905
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 1606272,
+      "componentType": 5126,
+      "count": 1750,
+      "max": [
+        0.9968439936637878,
+        0.9980000257492065
+      ],
+      "min": [
+        0.0020000000949949026,
+        0.0020000000949949026
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 0,
+      "byteOffset": 682680,
+      "componentType": 5125,
+      "count": 6120,
+      "type": "SCALAR"
+    }
+  ],
+  "asset": {
+    "extras": {
+      "author": "thippppp (https://sketchfab.com/thippppp)",
+      "license": "CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)",
+      "source": "https://sketchfab.com/3d-models/portal-rtx-assets-portal-gun-b6a8bec7ce814e4ba65174e9ce02e1fe",
+      "title": "Portal RTX Assets | Portal Gun"
+    },
+    "generator": "Sketchfab-15.23.0",
+    "version": "2.0"
+  },
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteLength": 707160,
+      "name": "floatBufferViews",
+      "target": 34963
+    },
+    {
+      "buffer": 0,
+      "byteLength": 1620272,
+      "byteOffset": 707160,
+      "byteStride": 8,
+      "name": "floatBufferViews",
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 1246704,
+      "byteOffset": 2327432,
+      "byteStride": 12,
+      "name": "floatBufferViews",
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 803136,
+      "byteOffset": 3574136,
+      "byteStride": 16,
+      "name": "floatBufferViews",
+      "target": 34962
+    }
+  ],
+  "buffers": [
+    {
+      "byteLength": 4377272,
+      "uri": "scene.bin"
+    }
+  ],
+  "extensionsUsed": [
+    "KHR_materials_transmission"
+  ],
+  "images": [
+    {
+      "uri": "textures/M_Character_PortalGun_baseColor.png"
+    },
+    {
+      "uri": "textures/M_Character_PortalGun_metallicRoughness.png"
+    },
+    {
+      "uri": "textures/M_Character_PortalGun_emissive.png"
+    },
+    {
+      "uri": "textures/M_Character_PortalGun_normal.png"
+    }
+  ],
+  "materials": [
+    {
+      "doubleSided": true,
+      "emissiveFactor": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "emissiveTexture": {
+        "index": 2
+      },
+      "name": "M_Character_PortalGun",
+      "normalTexture": {
+        "index": 3
+      },
+      "pbrMetallicRoughness": {
+        "baseColorTexture": {
+          "index": 0
+        },
+        "metallicRoughnessTexture": {
+          "index": 1
+        }
+      }
+    },
+    {
+      "alphaMode": "BLEND",
+      "doubleSided": true,
+      "extensions": {
+        "KHR_materials_transmission": {
+          "transmissionFactor": 1.0
+        }
+      },
+      "name": "M_Character_PortalGun_Glass",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          1.0,
+          1.0,
+          1.0,
+          0.25
+        ],
+        "roughnessFactor": 0.0
+      }
+    }
+  ],
+  "meshes": [
+    {
+      "name": "Object_0",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 1,
+            "POSITION": 0,
+            "TANGENT": 2,
+            "TEXCOORD_0": 3,
+            "TEXCOORD_1": 4,
+            "TEXCOORD_2": 5,
+            "TEXCOORD_3": 6
+          },
+          "indices": 7,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    },
+    {
+      "name": "Object_1",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 9,
+            "POSITION": 8,
+            "TEXCOORD_0": 10
+          },
+          "indices": 11,
+          "material": 1,
+          "mode": 4
+        }
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "children": [
+        1
+      ],
+      "matrix": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        2.220446049250313e-16,
+        -1.0,
+        0.0,
+        0.0,
+        1.0,
+        2.220446049250313e-16,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "name": "Sketchfab_model"
+    },
+    {
+      "children": [
+        2
+      ],
+      "name": "root"
+    },
+    {
+      "children": [
+        3
+      ],
+      "matrix": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        2.220446049250313e-16,
+        1.0,
+        0.0,
+        0.0,
+        -1.0,
+        2.220446049250313e-16,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "name": "GLTF_SceneRootNode"
+    },
+    {
+      "children": [
+        4,
+        5
+      ],
+      "matrix": [
+        0.991665005289408,
+        -0.022632004905268736,
+        0.12683970056069319,
+        0.0,
+        0.03724238854651672,
+        0.9927791371580535,
+        -0.11402889685979187,
+        0.0,
+        -0.12334310592695766,
+        0.11780228001901602,
+        0.9853471982213238,
+        0.0,
+        0.002493657171726227,
+        0.02119608223438263,
+        -0.2132076621055603,
+        1.0
+      ],
+      "name": "PortalGun_0"
+    },
+    {
+      "mesh": 0,
+      "name": "Object_4"
+    },
+    {
+      "mesh": 1,
+      "name": "Object_5"
+    }
+  ],
+  "samplers": [
+    {
+      "magFilter": 9729,
+      "minFilter": 9987,
+      "wrapS": 10497,
+      "wrapT": 10497
+    }
+  ],
+  "scene": 0,
+  "scenes": [
+    {
+      "name": "Sketchfab_Scene",
+      "nodes": [
+        0
+      ]
+    }
+  ],
+  "textures": [
+    {
+      "sampler": 0,
+      "source": 0
+    },
+    {
+      "sampler": 0,
+      "source": 1
+    },
+    {
+      "sampler": 0,
+      "source": 2
+    },
+    {
+      "sampler": 0,
+      "source": 3
+    }
+  ]
+}

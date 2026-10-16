@@ -9,10 +9,13 @@ PerspectiveCamera::PerspectiveCamera(const float FOV, const float aspectRatio)
     RecalculateViewMatrix();
 }
 
-void PerspectiveCamera::SetProjection(const float FOV, const float aspectRatio)
+void PerspectiveCamera::SetProjection(const float FOV, const float aspectRatio, float near, float far)
 {
-    m_ProjectionMatrix = glm::perspective(glm::radians(FOV), aspectRatio, 0.1f, 100.0f);
-    m_ViewProjectionMatrix = m_ProjectionMatrix * m_ViewMatrix;
+    m_Near = near;
+    m_Far = far;
+    m_FOV = FOV;
+    m_AspectRatio = aspectRatio;
+    RecalculateProjectionMatrix();
 }
 
 void PerspectiveCamera::SetRotation(const glm::vec3& rotation)
@@ -27,7 +30,7 @@ void PerspectiveCamera::SetRotation(const glm::vec3& rotation)
 
 void PerspectiveCamera::RecalculateProjectionMatrix()
 {
-    m_ProjectionMatrix = glm::perspective(m_FOV, m_AspectRatio, 0.1f, 100.0f);
+    m_ProjectionMatrix = glm::perspective(m_FOV, m_AspectRatio, m_Near, m_Far);
     m_ViewProjectionMatrix = m_ProjectionMatrix * m_ViewMatrix;
 }
 

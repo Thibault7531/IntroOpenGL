@@ -1,0 +1,11 @@
+Model Information:
+* title:	Portal RTX Assets | Portal Gun
+* source:	https://sketchfab.com/3d-models/portal-rtx-assets-portal-gun-b6a8bec7ce814e4ba65174e9ce02e1fe
+* author:	thippppp (https://sketchfab.com/thippppp)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Portal RTX Assets | Portal Gun" (https://sketchfab.com/3d-models/portal-rtx-assets-portal-gun-b6a8bec7ce814e4ba65174e9ce02e1fe) by thippppp (https://sketchfab.com/thippppp) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

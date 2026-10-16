@@ -12,9 +12,10 @@ public:
     [[nodiscard]] const glm::mat4& getViewProjectionMatrix() const { return m_ViewProjectionMatrix; }
 
     [[nodiscard]] const glm::vec3& getPosition() const { return m_Position; }
+    [[nodiscard]] glm::vec3& getPosition() { return m_Position; }
     void setPosition(const glm::vec3& position) { m_Position = position; RecalculateViewMatrix(); }
 
-    void SetProjection(float FOV, float aspectRatio);
+    void SetProjection(float FOV, float aspectRatio, float near, float far);
 
     [[nodiscard]] float GetAspectRatio() const { return m_AspectRatio; }
     void SetAspectRatio(float aspectRatio) { m_AspectRatio = aspectRatio; RecalculateProjectionMatrix(); }
@@ -23,6 +24,7 @@ public:
     void SetFOV(const float FOV) { m_FOV = FOV; RecalculateProjectionMatrix(); }
 
     [[nodiscard]] const glm::vec3& GetRotation() const { return m_Rotation; }
+    [[nodiscard]] glm::vec3& GetRotation() { return m_Rotation; }
     void SetRotation(const glm::vec3& rotation);
 
 private:
@@ -34,6 +36,8 @@ private:
     glm::mat4 m_ViewMatrix = 1.0f;
     glm::mat4 m_ViewProjectionMatrix = 1.0f;
 
+    float m_Near = 0.001f;
+    float m_Far = 1000.0f;
     float m_AspectRatio = 16.0f/9.0f;
     float m_FOV = glm::radians(60.0f);
 

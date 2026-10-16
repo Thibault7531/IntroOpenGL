@@ -165,6 +165,12 @@ namespace Graphics
         glUniform1i(location, value);
     }
 
+    void Shader::SetFloat(const std::string& name, float value)
+    {
+        uint32_t location = glGetUniformLocation(m_ShaderProgram, name.c_str());
+        glUniform1f(location, value);
+    }
+
     void Shader::SetFloat3Uniform(const std::string& name, const glm::vec3& value)
     {
         uint32_t location = glGetUniformLocation(m_ShaderProgram, name.c_str());

@@ -14,14 +14,13 @@ public:
     Model(const std::filesystem::path& objectPath);
     ~Model() = default;
 
-    void Render(std::shared_ptr<Graphics::Shader> shader, glm::mat4 transform, glm::mat4 viewProjection);
-
     const std::vector<std::shared_ptr<Mesh>>& GetMeshes() { return m_Meshes; }
     const std::vector<std::shared_ptr<Material>>& GetMaterials() { return m_Materials; }
 
 private:
-    void ProcessNode(aiNode* node, const aiScene* scene);
-    std::shared_ptr<Mesh> ProcessMesh(aiMesh* mesh, const aiScene* scene);
+    void ProcessNode(glm::mat4 parentTransform, aiNode* node, const aiScene* scene);
+    std::shared_ptr<Mesh> ProcessMesh(glm::mat4 transform, aiMesh* mesh, const aiScene* scene);
+    static glm::mat4 ConvertMatrix(const aiMatrix4x4& matrix);
 
 private:
     std::vector<std::shared_ptr<Mesh>> m_Meshes;
