@@ -9,8 +9,8 @@ add_compile_options(-mavx2)
 add_subdirectory(Vendor/assimp-6.0.5)
 add_subdirectory(Vendor/glfw-3.5.1)
 add_subdirectory(Vendor/glm)
-add_library(ImGui STATIC Vendor/imgui-docking/imgui.cpp Vendor/imgui-docking/imgui_demo.cpp Vendor/imgui-docking/imgui_draw.cpp Vendor/imgui-docking/imgui_widgets.cpp Vendor/imgui-docking/imgui_tables.cpp Vendor/imgui-docking/backends/imgui_impl_glfw.cpp Vendor/imgui-docking/backends/imgui_impl_opengl3.cpp)
-target_include_directories(ImGui PUBLIC Vendor/imgui-docking)
+add_library(ImGui STATIC Vendor/imgui/imgui.cpp Vendor/imgui/imgui_demo.cpp Vendor/imgui/imgui_draw.cpp Vendor/imgui/imgui_widgets.cpp Vendor/imgui/imgui_tables.cpp Vendor/imgui/backends/imgui_impl_glfw.cpp Vendor/imgui/backends/imgui_impl_opengl3.cpp)
+target_include_directories(ImGui PUBLIC Vendor/imgui)
 
 add_library(glad STATIC Vendor/glad/src/gl.c)
 target_include_directories(glad PUBLIC Vendor/glad/include)
@@ -27,8 +27,8 @@ add_executable(IntroOpenGL ${SOURCE_FILES}
 target_link_libraries(IntroOpenGL assimp ImGui glfw glad glm)
 target_include_directories(IntroOpenGL PUBLIC
                            Vendor/assimp-6.0.5/include
-                           Vendor/imgui-docking
-                           Vendor/imgui-docking/backends
+                           Vendor/imgui
+                           Vendor/imgui/backends
                            Vendor/glfw-3.5.1/includeb
                            Vendor/glad/include
                            Vendor/glm
