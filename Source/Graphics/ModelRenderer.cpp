@@ -1,5 +1,23 @@
 #include "ModelRenderer.h"
 
+ModelRenderer::ModelRenderer()
+{
+    float quad[] = {
+        -1.0f, -1.0f, 0.0f,
+        1.0f, -1.0f, 0.0f,
+        -1.0f, 1.0f, 0.0f,
+        1.0f, 1.0f, 0.0f,
+    };
+    uint32_t indices[] = {0, 1, 2, 2, 1, 3};
+    std::shared_ptr<Graphics::VertexBuffer> quadVB = std::make_shared<Graphics::VertexBuffer>(quad, sizeof(quad));
+    quadVB->SetLayout({
+        {"a_Position", Graphics::VertexDataType::Float3}
+    });
+    m_QuadVA = std::make_shared<Graphics::VertexArray>();
+    m_QuadVA->SetVertexBuffer(quadVB);
+    m_QuadVA->SetIndexBuffer(std::make_shared<Graphics::IndexBuffer>(indices, sizeof(indices) / sizeof(uint32_t)));
+}
+
 void ModelRenderer::NewFrame()
 {
     m_TransparentMeshes.clear();
@@ -40,7 +58,8 @@ void ModelRenderer::Render(std::shared_ptr<Model> model, std::shared_ptr<Graphic
             tempMesh.Mesh = mesh;
             tempMesh.Shader = shader;
             tempMesh.Transform = transform;
-            tempMesh.ViewProjection = projection * view;
+            tempMesh.View = view;
+            tempMesh.Projection = projection;
             tempMesh.distance = glm::distance(cameraPosition, meshPosition);
             m_TransparentMeshes.push_back(tempMesh);
         }
@@ -48,33 +67,55 @@ void ModelRenderer::Render(std::shared_ptr<Model> model, std::shared_ptr<Graphic
     shader->Unbind();
 }
 
-void ModelRenderer::EndFrame()
+void ModelRenderer::EndFrame(std::shared_ptr<Graphics::Framebuffer> oitFBO, std::shared_ptr<Graphics::Shader> oitAccum, std::shared_ptr<Graphics::Shader> oitComposite)
 {
-    std::sort(m_TransparentMeshes.begin(), m_TransparentMeshes.end(), [](const TransparentMesh& a, const TransparentMesh& b)
-    {
-        return a.distance > b.distance;
-    });
+    oitFBO->Bind();
+    glm::vec4 clearColor = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
+    float clearOne = 1.0f;
+    glClearBufferfv(GL_COLOR, 0, &clearColor[0]);
+    glClearBufferfv(GL_COLOR, 1, &clearOne);
+    glBlitNamedFramebuffer(0, oitFBO->GetFramebufferID(), 0, 0, oitFBO->GetWidth(), oitFBO->GetHeight(), 0, 0, oitFBO->GetWidth(), oitFBO->GetHeight(), GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT, GL_NEAREST);
     for (auto mesh : m_TransparentMeshes)
     {
-        mesh.Shader->Bind();
-        mesh.Shader->SetMat4Uniform("u_Transform", mesh.Transform * mesh.Mesh->GetTransform());
-        mesh.Shader->SetMat4Uniform("u_ViewProjection", mesh.ViewProjection);
-        mesh.Shader->SetInt("u_Material.diffuseMap", 0);
-        mesh.Shader->SetInt("u_Material.emissiveMap", 1);
+        glEnable(GL_DEPTH_TEST);
+        glDepthMask(GL_FALSE);
+        glEnable(GL_BLEND);
+        glBlendFunci(0, GL_ONE, GL_ONE);
+        glBlendFunci(1, GL_ZERO, GL_ONE_MINUS_SRC_COLOR);
+        oitAccum->Bind();
+        oitAccum->SetMat4Uniform("u_Transform", mesh.Transform * mesh.Mesh->GetTransform());
+        oitAccum->SetMat4Uniform("u_ViewProjection", mesh.Projection * mesh.View);
+        oitAccum->SetInt("u_Material.diffuseMap", 0);
+        oitAccum->SetInt("u_Material.emissiveMap", 1);
         auto material = mesh.Model->GetMaterials()[mesh.Mesh->GetMaterialIndex()];
-        material->SetupRenderState();
-        mesh.Shader->SetFloat3Uniform("u_Material.ambient", material->GetAmbientColor());
-        mesh.Shader->SetInt("u_Material.emissiveChannels", material->GetEmissiveTexture()->GetChannelCount());
+        oitAccum->SetFloat3Uniform("u_Material.ambient", material->GetAmbientColor());
+        oitAccum->SetInt("u_Material.emissiveChannels", material->GetEmissiveTexture()->GetChannelCount());
         material->GetColorTextures()[0]->BindToSlot(0);
         material->GetEmissiveTexture()->BindToSlot(1);
-        mesh.Shader->SetFloat3Uniform("u_Material.specular", material->GetSpecularColor());
-        mesh.Shader->SetFloat("u_Material.shininess", material->GetShininess());
-        mesh.Shader->SetFloat4Uniform("u_BaseColor", material->GetBaseColor());
+        oitAccum->SetFloat3Uniform("u_Material.specular", material->GetSpecularColor());
+        oitAccum->SetFloat("u_Material.shininess", material->GetShininess());
+        oitAccum->SetFloat4Uniform("u_BaseColor", material->GetBaseColor());
         mesh.Mesh->GetVertexArray()->Bind();
         glDrawElements(GL_TRIANGLES, mesh.Mesh->GetVertexArray()->GetIndexCount(), GL_UNSIGNED_INT, nullptr);
         mesh.Mesh->GetVertexArray()->Unbind();
-        mesh.Shader->Unbind();
+        oitAccum->Unbind();
     }
+    oitFBO->Unbind();
+
+    glDepthMask(GL_FALSE);
+    glDisable(GL_DEPTH_TEST);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    oitComposite->Bind();
+    oitComposite->SetInt("u_AccumTexture", 0);
+    oitComposite->SetInt("u_RevealTexture", 1);
+    oitFBO->GetColorAttachment(0)->BindToSlot(0);
+    oitFBO->GetColorAttachment(1)->BindToSlot(1);
+    m_QuadVA->Bind();
+    glDrawElements(GL_TRIANGLES, m_QuadVA->GetIndexCount(), GL_UNSIGNED_INT, nullptr);
+    m_QuadVA->Unbind();
+    oitComposite->Unbind();
+
 }
 
 void ModelRenderer::ShutDown()

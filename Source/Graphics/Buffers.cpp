@@ -52,6 +52,11 @@ namespace Graphics
         glDeleteBuffers(1, &m_BufferID);
     }
 
+    void IndexBuffer::SetData(uint32_t* data, uint32_t count)
+    {
+        glNamedBufferData(m_BufferID, count * sizeof(uint32_t), data, GL_STATIC_DRAW);
+    }
+
     void IndexBuffer::Bind()
     {
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_BufferID);

@@ -88,6 +88,7 @@ namespace Graphics
         ~IndexBuffer();
 
         uint32_t GetCount() { return m_Count; }
+        void SetData(uint32_t* data, uint32_t count);
 
         void Bind();
         void Unbind();

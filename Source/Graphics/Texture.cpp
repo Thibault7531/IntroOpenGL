@@ -13,7 +13,7 @@ namespace Graphics
         stbi_set_flip_vertically_on_load(true);
         int32_t width, height, channel;
         uint8_t* textureData = stbi_load(texturePath.string().c_str(), &width, &height, &channel, STBI_rgb_alpha);
-        GLenum texFormat = GL_RGBA;
+        m_Format = GL_RGBA;
 
         m_Width = width;
         m_Height = height;
@@ -27,7 +27,7 @@ namespace Graphics
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexImage2D(GL_TEXTURE_2D, 0, texFormat, m_Width, m_Height, 0, texFormat, GL_UNSIGNED_BYTE, textureData);
+        glTexImage2D(GL_TEXTURE_2D, 0, m_Format, m_Width, m_Height, 0, m_Format, GL_UNSIGNED_BYTE, textureData);
         glBindTexture(GL_TEXTURE_2D, 0);
 
         stbi_image_free(textureData);
@@ -48,8 +48,26 @@ namespace Graphics
         glBindTexture(GL_TEXTURE_2D, 0);
     }
 
+    Texture::Texture(uint32_t width, uint32_t height, GLenum format)
+    {
+        m_Width = width;
+        m_Height = height;
+        m_Format = format;
+        m_ChannelCount = GetChannelCount(m_Format);
+
+        glGenTextures(1, &m_TextureId);
+        glBindTexture(GL_TEXTURE_2D, m_TextureId);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexStorage2D(GL_TEXTURE_2D, 1, m_Format, m_Width, m_Height);
+        glBindTexture(GL_TEXTURE_2D, 0);
+    }
+
     void Texture::SetData(void* data, GLenum format)
     {
+        m_Format = GL_RGBA;
         glBindTexture(GL_TEXTURE_2D, m_TextureId);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_Width, m_Height, 0, format, GL_UNSIGNED_BYTE, data);
         glBindTexture(GL_TEXTURE_2D, 0);
@@ -64,6 +82,11 @@ namespace Graphics
     {
         glActiveTexture(GL_TEXTURE0 + slot);
         glBindTexture(GL_TEXTURE_2D, m_TextureId);
+    }
+
+    void Texture::BindToFramebufferSlot(GLint slot)
+    {
+        glFramebufferTexture2D(GL_FRAMEBUFFER, slot, GL_TEXTURE_2D, m_TextureId, 0);
     }
 
     void Texture::Unbind()
@@ -99,5 +122,32 @@ namespace Graphics
         }
 
         return false;
+    }
+
+    uint32_t Texture::GetChannelCount(GLenum format)
+    {
+        switch (format)
+        {
+        case GL_RGBA: return 4;
+        default: return 0;
+        }
+    }
+
+    GLenum Texture::GetDataFormat(GLenum format)
+    {
+        switch (format)
+        {
+        case GL_DEPTH24_STENCIL8: return GL_DEPTH_STENCIL;
+        case GL_RGBA8: return GL_RGBA;
+        }
+    }
+
+    GLenum Texture::GetDataType(GLenum format)
+    {
+        switch (format)
+        {
+        case GL_DEPTH24_STENCIL8: return GL_UNSIGNED_INT_24_8;
+        case GL_RGBA8: return GL_UNSIGNED_BYTE;
+        }
     }
 }

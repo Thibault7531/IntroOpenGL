@@ -53,16 +53,18 @@ void PortalRenderer::Shutdown()
 }
 
 void PortalRenderer::Render(glm::mat4 bluePortalTransform, glm::mat4 orangePortalTransform, glm::mat4 view,
-                            glm::mat4 projection)
+                            glm::mat4 projection, std::shared_ptr<Graphics::Framebuffer> oitFBO, std::shared_ptr<Graphics::Shader> oitAccumShader, std::shared_ptr<Graphics::Shader> oitCompositeShader)
 {
     ClearStencilBuffer();
 
-    RenderBluePortal(bluePortalTransform, orangePortalTransform, view, projection, 0);
-    RenderOrangePortal(bluePortalTransform, orangePortalTransform, view, projection, 0);
+    RenderBluePortal(bluePortalTransform, orangePortalTransform, view, projection, 0, oitFBO, oitAccumShader, oitCompositeShader);
+    RenderOrangePortal(bluePortalTransform, orangePortalTransform, view, projection, 0, oitFBO, oitAccumShader, oitCompositeShader);
+
+    glEnable(GL_BLEND);
 }
 
 void PortalRenderer::RenderBluePortal(glm::mat4 bluePortalTransform, glm::mat4 orangePortalTransform, glm::mat4 view,
-    glm::mat4 projection, uint32_t depth)
+    glm::mat4 projection, uint32_t depth, std::shared_ptr<Graphics::Framebuffer> oitFBO, std::shared_ptr<Graphics::Shader> oitAccumShader, std::shared_ptr<Graphics::Shader> oitCompositeShader)
 {
     if (depth >= s_RecursionDepth) return;
 
@@ -83,14 +85,14 @@ void PortalRenderer::RenderBluePortal(glm::mat4 bluePortalTransform, glm::mat4 o
     {
         renderer.Render(data.model, s_SceneShader, data.transform, bluePortalView, bluePortalProjection);
     }
-    RenderBluePortal(bluePortalTransform, orangePortalTransform, bluePortalView, bluePortalProjection, depth + 1);
+    RenderBluePortal(bluePortalTransform, orangePortalTransform, bluePortalView, bluePortalProjection, depth + 1, oitFBO, oitAccumShader, oitCompositeShader);
     glEnable(GL_STENCIL_TEST);
-    renderer.EndFrame();
+    renderer.EndFrame(oitFBO, oitAccumShader, oitCompositeShader);
     ResetPortalDepthBuffer(bluePortalTransform, view, projection, glm::vec3(0.0f, 0.0f, 1.0f), depth, false);
 }
 
 void PortalRenderer::RenderOrangePortal(glm::mat4 bluePortalTransform, glm::mat4 orangePortalTransform, glm::mat4 view,
-    glm::mat4 projection, uint32_t depth)
+    glm::mat4 projection, uint32_t depth, std::shared_ptr<Graphics::Framebuffer> oitFBO, std::shared_ptr<Graphics::Shader> oitAccumShader, std::shared_ptr<Graphics::Shader> oitCompositeShader)
 {
     if (depth >= s_RecursionDepth) return;
 
@@ -111,9 +113,9 @@ void PortalRenderer::RenderOrangePortal(glm::mat4 bluePortalTransform, glm::mat4
     {
         renderer.Render(data.model, s_SceneShader, data.transform, orangePortalView, orangePortalProjection);
     }
-    RenderOrangePortal(bluePortalTransform, orangePortalTransform, orangePortalView, orangePortalProjection, depth + 1);
+    RenderOrangePortal(bluePortalTransform, orangePortalTransform, orangePortalView, orangePortalProjection, depth + 1, oitFBO, oitAccumShader, oitCompositeShader);
     glEnable(GL_STENCIL_TEST);
-    renderer.EndFrame();
+    renderer.EndFrame(oitFBO, oitAccumShader, oitCompositeShader);
     ResetPortalDepthBuffer(orangePortalTransform, view, projection, glm::vec3(1.0f, 0.0f, 0.0f), depth, true);
 }
 
@@ -192,6 +194,7 @@ void PortalRenderer::ClearPortalDepthBuffer(glm::mat4 portalTransform, glm::mat4
 void PortalRenderer::ResetPortalDepthBuffer(glm::mat4 portalTransform, glm::mat4 view, glm::mat4 projection,
     glm::vec3 portalColor, uint32_t depth, bool isOrange)
 {
+    glEnable(GL_DEPTH_TEST);
     glDepthMask(GL_TRUE);
     glDepthFunc(GL_ALWAYS);
     glDepthRange(1.0f, 1.0f);

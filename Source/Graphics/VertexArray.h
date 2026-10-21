@@ -14,6 +14,7 @@ namespace Graphics
 
         void SetVertexBuffer(const std::shared_ptr<VertexBuffer>& vbo);
         void SetIndexBuffer(const std::shared_ptr<IndexBuffer>& ibo);
+        std::shared_ptr<IndexBuffer> GetIndexBuffer() const { return m_IndexBuffer; }
 
         uint32_t GetIndexCount() const { return m_IndexBuffer->GetCount(); }
 

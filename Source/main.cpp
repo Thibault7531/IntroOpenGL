@@ -14,6 +14,7 @@
 #include "glm/gtc/type_ptr.hpp"
 #include "glm/gtx/norm.hpp"
 #include "Graphics/Buffers.h"
+#include "Graphics/Framebuffer.h"
 #include "Graphics/Model.h"
 #include "Graphics/ModelRenderer.h"
 #include "Graphics/PortalRenderer.h"
@@ -25,7 +26,7 @@
 #include "Windowing/WindowManager.h"
 
 static PerspectiveCameraController camera{16.f/9.f, glm::radians(60.f)};
-static OrbitCamera orbitCamera{glm::radians(60.0f), 1920.0f/1080.0f, 0.001f, 100000.0f};
+static OrbitCamera orbitCamera{glm::radians(60.0f), 1920.0f/1080.0f, 0.1f, 1000.0f};
 
 void OnKeyPressedEvent(Window* window, int key, int scancode, int action, int mode)
 {
@@ -81,8 +82,10 @@ int main()
     std::shared_ptr<Graphics::Shader> shader = std::make_shared<Graphics::Shader>(std::filesystem::path("assets") / "triangleVert.glsl", std::filesystem::path("assets") / "triangleFrag.glsl");
 
     camera.GetCamera().SetProjection(glm::radians(60.f), 16.f / 9.f, 0.001f, 100.f);
-    camera.GetCamera().setPosition({-5.5f, 4.f, 1.8f});
-    camera.GetCamera().SetRotation({0.f, -220.f, 0.f});
+    //camera.GetCamera().setPosition({-5.5f, 4.f, 1.8f});
+    camera.GetCamera().setPosition({-9.76f, 4.35f, 17.69f});
+    //camera.GetCamera().SetRotation({0.f, -220.f, 0.f});
+    camera.GetCamera().SetRotation({-89.9f, -406.6f, 0.f});
     orbitCamera.SetDistance(5.0f);
 
     uint8_t whiteTextureData[] = {255, 255, 255, 255};
@@ -159,10 +162,14 @@ int main()
     cubeVao->SetIndexBuffer(cubeIbo);
 
     std::shared_ptr<Graphics::Shader> modelShader = std::make_shared<Graphics::Shader>(std::filesystem::path("assets/ModelVert.glsl"), "assets/ModelFrag.glsl");
+    std::shared_ptr<Graphics::Shader> oitAccumShader = std::make_shared<Graphics::Shader>(std::filesystem::path("assets/ModelVert.glsl"), "assets/oitAccum.glsl");
+    std::shared_ptr<Graphics::Shader> oitCompositeShader = std::make_shared<Graphics::Shader>(std::filesystem::path("assets/oitCompositeVert.glsl"), "assets/oitCompositeFrag.glsl");
 
     std::shared_ptr<Model> portalGun = std::make_shared<Model>("assets/PortalGun2/scene.gltf");
     std::shared_ptr<Model> map = std::make_shared<Model>("assets/Portal Map 3/scene.gltf");
+    std::shared_ptr<Model> cube = std::make_shared<Model>("assets/cube_companion/scene.gltf");
 
+    glEnable(GL_MULTISAMPLE);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
@@ -177,7 +184,7 @@ int main()
         float linear = 0.22f;
         float quadratic = 0.2f;
     };
-    constexpr int pointLightCount = 12;
+    constexpr int pointLightCount = 13;
     PointLight lights[pointLightCount];
     lights[0].position = {-10.39f, 6.2f, 6.03f};
     lights[0].linear = 0.22f;
@@ -223,6 +230,11 @@ int main()
     lights[11].position = {-4.85f, 8.45f, 15.85f};
     lights[11].linear = 0.0f;
     lights[11].quadratic = 0.012f;
+    lights[12].position = {-15.82f, 2.94f, 20.0f};
+    lights[12].diffuse = {1.0f, 0.75f, 0.8f};
+    lights[12].constant = 1.0f;
+    lights[12].linear = 1.0f;
+    lights[12].quadratic = 0.0f;
 
     struct DirectionalLight
     {
@@ -235,12 +247,19 @@ int main()
     dirLight.direction = glm::vec3(0.0f, -1.0f, 0.0f);
 
     glm::vec3 portalGunPosition = glm::vec3(0.16f, -0.22f, -0.3f);
+    glm::vec3 cubePosition = glm::vec3(-15.81f, 2.93f, 20.1f);
+    float cubeRotation = 0.0f;
+    float cubeScale = 0.5f;
 
     glm::vec3 bluePortalPosition = glm::vec3(-11.245f, 4.27f, 7.86f);
     float bluePortalRotation = 0.0f;
+    glm::vec3 bluePortal2Position = glm::vec3(-12.805f, 3.61f, 21.32f);
+    float bluePortal2Rotation = 0.0f;
 
     glm::vec3 orangePortalPosition = glm::vec3(-15.83f, 3.63f, 6.09f);
     float orangePortalRotation = glm::radians(270.0f);
+    glm::vec3 orangePortal2Position = glm::vec3(-12.8f, 3.63f, 14.03f);
+    float orangePortal2Rotation = glm::radians(180.0f);
     //glm::vec3 orangePortalPosition = glm::vec3(-11.16f, 4.17f, 6.095f);
     //float orangePortalRotation = glm::radians(180.0f);
 
@@ -255,8 +274,13 @@ int main()
     keyFrames.push_back({30.0f, glm::vec3(-14.0f, 4.2f, 5.9f), glm::vec3(-15.8f, 3.7f, 6.0f)});
     keyFrames.push_back({35.0f, glm::vec3(-11.6f, 4.8f, 4.5f), glm::vec3(-10.4f, 4.6f, 7.9f)});
     keyFrames.push_back({38.0f, glm::vec3(-8.1f, 3.9f, 10.5f), glm::vec3(-10.4f, 3.3f, 13.6f)});
+    keyFrames.push_back({40.0f, glm::vec3(-9.0f, 3.9f, 15.1f), glm::vec3(-13.54f, 2.44f, 21.19f)});
+    keyFrames.push_back({44.0f, glm::vec3(-12.82f, 3.9f, 16.35f), glm::vec3(-12.82f, 3.9f, 21.23f)});
+    keyFrames.push_back({48.0f, glm::vec3(-16.32f, 4.5f, 14.31f), glm::vec3(-12.82f, 3.9f, 20.23f)});
     KeyFrameAnimation::SetKeyFrames(keyFrames);
     bool useKeyFrames = true;
+
+    std::shared_ptr<Graphics::Framebuffer> oitFBO = std::make_shared<Graphics::Framebuffer>(Graphics::FramebufferSpecification{p_Window->GetFramebufferSize().first, p_Window->GetFramebufferSize().second, {GL_RGBA16F, GL_R16F, GL_DEPTH24_STENCIL8}});
 
     uint32_t previousFramerates[1000] = {};
     uint32_t index = 0;
@@ -290,7 +314,7 @@ int main()
 
         shader->Bind();
         shader->SetMat4Uniform("u_Transform", glm::scale(glm::translate(glm::mat4(1.0f), lights[pointLightCount - 1].position), glm::vec3(0.1f)));
-        shader->SetMat4Uniform("u_ViewProjection", camera.GetCamera().getViewProjectionMatrix());
+        shader->SetMat4Uniform("u_ViewProjection", camera.GetCamera().getProjectionMatrix() * view);
         shader->SetFloat3Uniform("u_Color", lights[pointLightCount - 1].diffuse);
         //shader->SetMat4Uniform("u_ViewProjection", orbitCamera.GetViewProjectionMatrix());
         shader->SetInt("u_Texture", 0);
@@ -299,12 +323,15 @@ int main()
         cubeVao->Unbind();
         shader->Unbind();
 
-        ImGui::Begin("Light");
-        ImGui::DragFloat3("Position", glm::value_ptr(lights[pointLightCount - 1].position), 0.01f);
-        ImGui::DragFloat3("Ambient", glm::value_ptr(lights[pointLightCount - 1].ambient), 0.01f, 0.0f, 1.0f);
-        ImGui::DragFloat3("Diffuse", glm::value_ptr(lights[pointLightCount - 1].diffuse), 0.01f, 0.0f, 1.0f);
-        ImGui::DragFloat3("Specular", glm::value_ptr(lights[pointLightCount - 1].specular), 0.01f, 0.0f, 1.0f);
-        ImGui::End();
+        if (!useKeyFrames)
+        {
+            ImGui::Begin("Light");
+            ImGui::DragFloat3("Position", glm::value_ptr(lights[pointLightCount - 1].position), 0.01f);
+            ImGui::DragFloat3("Ambient", glm::value_ptr(lights[pointLightCount - 1].ambient), 0.01f, 0.0f, 1.0f);
+            ImGui::DragFloat3("Diffuse", glm::value_ptr(lights[pointLightCount - 1].diffuse), 0.01f, 0.0f, 1.0f);
+            ImGui::DragFloat3("Specular", glm::value_ptr(lights[pointLightCount - 1].specular), 0.01f, 0.0f, 1.0f);
+            ImGui::End();
+        }
 
         modelShader->Bind();
         modelShader->SetInt("u_PointLightCount", pointLightCount);
@@ -325,11 +352,26 @@ int main()
         modelShader->SetFloat3Uniform("u_CameraPosition", camera.GetCamera().getPosition());
         modelShader->Unbind();
 
-        ImGui::Begin("PortalGun");
-        ImGui::DragFloat3("Position", glm::value_ptr(portalGunPosition), 0.01f);
-        ImGui::End();
+        oitAccumShader->Bind();
+        oitAccumShader->SetInt("u_PointLightCount", pointLightCount);
+        for (int i = 0; i < pointLightCount; i++)
+        {
+            oitAccumShader->SetFloat3Uniform(std::format("u_PointLights[{}].position", i), lights[i].position);
+            oitAccumShader->SetFloat3Uniform(std::format("u_PointLights[{}].ambient", i), lights[i].ambient);
+            oitAccumShader->SetFloat3Uniform(std::format("u_PointLights[{}].diffuse", i), lights[i].diffuse);
+            oitAccumShader->SetFloat3Uniform(std::format("u_PointLights[{}].specular", i), lights[i].specular);
+            oitAccumShader->SetFloat(std::format("u_PointLights[{}].constant", i), lights[i].constant);
+            oitAccumShader->SetFloat(std::format("u_PointLights[{}].linear", i), lights[i].linear);
+            oitAccumShader->SetFloat(std::format("u_PointLights[{}].quadratic", i), lights[i].quadratic);
+        }
+        oitAccumShader->SetFloat3Uniform("u_DirLight.direction", dirLight.direction);
+        oitAccumShader->SetFloat3Uniform("u_DirLight.ambient", dirLight.ambient);
+        oitAccumShader->SetFloat3Uniform("u_DirLight.diffuse", dirLight.diffuse);
+        oitAccumShader->SetFloat3Uniform("u_DirLight.specular", dirLight.specular);
+        oitAccumShader->SetFloat3Uniform("u_CameraPosition", camera.GetCamera().getPosition());
+        oitAccumShader->Unbind();
 
-        worldRenderer.Render(map, modelShader, glm::mat4(1.0f), view, camera.GetCamera().getProjectionMatrix());
+        //worldRenderer.Render(map, modelShader, glm::mat4(1.0f), view, camera.GetCamera().getProjectionMatrix());
 
 
         //glm::mat4 portalGunCameraTransform = glm::inverse(camera.GetCamera().getViewMatrix());
@@ -337,32 +379,55 @@ int main()
         //portalGunTransform = glm::rotate(portalGunTransform, glm::radians(180.f), glm::vec3(0.0f, 1.0f, 0.0f));
         //ModelRenderer::Render(portalGun, modelShader, portalGunCameraTransform * portalGunTransform, camera.GetCamera().getViewMatrix(), camera.GetCamera().getProjectionMatrix());
 
-        ImGui::Begin("Blue Portal");
-        ImGui::DragFloat3("Position", glm::value_ptr(bluePortalPosition), 0.01f);
-        ImGui::DragFloat("Rotation", &bluePortalRotation, 0.01f);
-        ImGui::End();
+        if (!useKeyFrames)
+        {
+            ImGui::Begin("Blue Portal");
+            ImGui::DragFloat3("Position", glm::value_ptr(bluePortal2Position), 0.01f);
+            ImGui::DragFloat("Rotation", &bluePortal2Rotation, 0.01f);
+            ImGui::End();
 
-        ImGui::Begin("Orange Portal");
-        ImGui::DragFloat3("Position", glm::value_ptr(orangePortalPosition), 0.01f);
-        ImGui::DragFloat("Rotation", &orangePortalRotation, 0.01f);
-        ImGui::End();
+            ImGui::Begin("Orange Portal");
+            ImGui::DragFloat3("Position", glm::value_ptr(orangePortal2Position), 0.01f);
+            ImGui::DragFloat("Rotation", &orangePortal2Rotation, 0.01f);
+            ImGui::End();
+
+            ImGui::Begin("Cube");
+            ImGui::DragFloat3("Position", glm::value_ptr(cubePosition), 0.01f);
+            ImGui::DragFloat("Rotation", &cubeRotation, 0.01f);
+            ImGui::DragFloat("Scale", &cubeScale, 0.01f);
+            ImGui::End();
+        }
 
         std::vector<PortalRenderData> scene;
         PortalRenderData mapData{map, glm::mat4(1.0f)};
         scene.push_back(mapData);
+        PortalRenderData cubeData{cube, glm::scale(glm::rotate(glm::translate(glm::mat4(1.0f), cubePosition), cubeRotation, glm::vec3(0.0f, 1.0f, 0.0f)), glm::vec3(cubeScale))};
+        scene.push_back(cubeData);
         PortalRenderer::SetScene(scene, modelShader);
+
+        for (auto& data : scene)
+        {
+            worldRenderer.Render(data.model, modelShader, data.transform, view, camera.GetCamera().getProjectionMatrix());
+        }
 
         glm::mat4 bluePortalTransform = glm::rotate(glm::translate(glm::mat4(1.0f), bluePortalPosition), bluePortalRotation, glm::vec3(0.0f, 1.0f, 0.0f));
         glm::mat4 orangePortalTransform = glm::rotate(glm::translate(glm::mat4(1.0f), orangePortalPosition), orangePortalRotation, glm::vec3(0.0f, 1.0f, 0.0f));
 
-        PortalRenderer::Render(bluePortalTransform, orangePortalTransform, view, camera.GetCamera().getProjectionMatrix());
+        glm::mat4 bluePortal2Transform = glm::rotate(glm::translate(glm::mat4(1.0f), bluePortal2Position), bluePortal2Rotation, glm::vec3(0.0f, 1.0f, 0.0f));
+        glm::mat4 orangePortal2Transform = glm::rotate(glm::translate(glm::mat4(1.0f), orangePortal2Position), orangePortal2Rotation, glm::vec3(0.0f, 1.0f, 0.0f));
 
-        worldRenderer.EndFrame();
+        if (glfwGetTime() < 38.0f) PortalRenderer::Render(bluePortalTransform, orangePortalTransform, view, camera.GetCamera().getProjectionMatrix(), oitFBO, oitAccumShader, oitCompositeShader);
+        else PortalRenderer::Render(bluePortal2Transform, orangePortal2Transform, view, camera.GetCamera().getProjectionMatrix(), oitFBO, oitAccumShader, oitCompositeShader);
 
-        ImGui::Begin("Camera Debug");
-        ImGui::DragFloat3("Position", glm::value_ptr(camera.GetCamera().getPosition()));
-        ImGui::DragFloat3("Rotation", glm::value_ptr(camera.GetCamera().GetRotation()));
-        ImGui::End();
+        worldRenderer.EndFrame(oitFBO, oitAccumShader, oitCompositeShader);
+
+        if (!useKeyFrames)
+        {
+            ImGui::Begin("Camera Debug");
+            ImGui::DragFloat3("Position", glm::value_ptr(camera.GetCamera().getPosition()));
+            ImGui::DragFloat3("Rotation", glm::value_ptr(camera.GetCamera().GetRotation()));
+            ImGui::End();
+        }
 
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

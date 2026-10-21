@@ -69,6 +69,13 @@ void Window::SetFullscreen(bool fullscreen)
     }
 }
 
+std::pair<uint32_t, uint32_t> Window::GetFramebufferSize()
+{
+    int32_t width, height;
+    glfwGetWindowSize(m_Window, &width, &height);
+    return std::make_pair(width, height);
+}
+
 void Window::PollEvents()
 {
     glfwPollEvents();

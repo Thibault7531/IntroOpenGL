@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 
+#include "Framebuffer.h"
 #include "Model.h"
 
 struct PortalRenderData
@@ -16,11 +17,11 @@ public:
     static void Shutdown();
     static void SetScene(std::vector<PortalRenderData> scene, std::shared_ptr<Graphics::Shader> sceneShader) { s_Scene = scene; s_SceneShader = sceneShader; }
 
-    static void Render(glm::mat4 bluePortalTransform, glm::mat4 orangePortalTransform, glm::mat4 view, glm::mat4 projection);
+    static void Render(glm::mat4 bluePortalTransform, glm::mat4 orangePortalTransform, glm::mat4 view, glm::mat4 projection, std::shared_ptr<Graphics::Framebuffer> oitFBO, std::shared_ptr<Graphics::Shader> oitAccumShader, std::shared_ptr<Graphics::Shader> oitCompositeShader);
 
 private:
-    static void RenderBluePortal(glm::mat4 bluePortalTransform, glm::mat4 orangePortalTransform, glm::mat4 view, glm::mat4 projection, uint32_t depth);
-    static void RenderOrangePortal(glm::mat4 bluePortalTransform, glm::mat4 orangePortalTransform, glm::mat4 view, glm::mat4 projection, uint32_t depth);
+    static void RenderBluePortal(glm::mat4 bluePortalTransform, glm::mat4 orangePortalTransform, glm::mat4 view, glm::mat4 projection, uint32_t depth, std::shared_ptr<Graphics::Framebuffer> oitFBO, std::shared_ptr<Graphics::Shader> oitAccumShader, std::shared_ptr<Graphics::Shader> oitCompositeShader);
+    static void RenderOrangePortal(glm::mat4 bluePortalTransform, glm::mat4 orangePortalTransform, glm::mat4 view, glm::mat4 projection, uint32_t depth, std::shared_ptr<Graphics::Framebuffer> oitFBO, std::shared_ptr<Graphics::Shader> oitAccumShader, std::shared_ptr<Graphics::Shader> oitCompositeShader);
     static void RenderPortal(glm::mat4 portalTransform, glm::mat4 view, glm::mat4 projection, glm::vec3 portalColor);
     static void RenderPortalFrame(glm::mat4 portalTransform, glm::mat4 view, glm::mat4 projection, bool isOrange);
 

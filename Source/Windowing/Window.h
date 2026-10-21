@@ -32,6 +32,8 @@ public:
     void SetFramebufferResizeCallback(const std::function<void(Window*, int, int)>& func) { m_FramebufferResizeCallback = func; }
     std::function<void(Window*, int, int)> GetFramebufferResizeCallback() { return m_FramebufferResizeCallback; }
 
+    std::pair<uint32_t, uint32_t> GetFramebufferSize();
+
     uint32_t GetID() { return reinterpret_cast<uint64_t>(m_Window); }
     void* GetHandle() { return m_Window; }
 
