@@ -27,6 +27,7 @@
 
 static PerspectiveCameraController camera{16.f/9.f, glm::radians(60.f)};
 static OrbitCamera orbitCamera{glm::radians(60.0f), 1920.0f/1080.0f, 0.1f, 1000.0f};
+static std::shared_ptr<Graphics::Framebuffer> oitFBO;
 
 void OnKeyPressedEvent(Window* window, int key, int scancode, int action, int mode)
 {
@@ -56,6 +57,7 @@ void OnFramebufferResized(Window*, int width, int height)
 
     camera.OnWindowResize(width, height);
     orbitCamera.OnWindowResized(width, height);
+    if (oitFBO) oitFBO->Resize(width, height);
 }
 
 int main()
@@ -279,7 +281,7 @@ int main()
     KeyFrameAnimation::SetKeyFrames(keyFrames);
     bool useKeyFrames = true;
 
-    std::shared_ptr<Graphics::Framebuffer> oitFBO = std::make_shared<Graphics::Framebuffer>(Graphics::FramebufferSpecification{p_Window->GetFramebufferSize().first, p_Window->GetFramebufferSize().second, {GL_RGBA16F, GL_R16F, GL_DEPTH24_STENCIL8}});
+    oitFBO = std::make_shared<Graphics::Framebuffer>(Graphics::FramebufferSpecification{p_Window->GetFramebufferSize().first, p_Window->GetFramebufferSize().second, {GL_RGBA16F, GL_R16F, GL_DEPTH24_STENCIL8}});
 
     uint32_t previousFramerates[1000] = {};
     uint32_t index = 0;

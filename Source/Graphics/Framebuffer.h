@@ -26,6 +26,8 @@ namespace Graphics
         uint32_t GetHeight() const { return m_Height; }
         std::shared_ptr<Graphics::Texture> GetColorAttachment(uint32_t index) const { return m_ColorAttachments[index]; }
 
+        void Resize(uint32_t width, uint32_t height);
+
         void Bind();
         void Unbind();
 
