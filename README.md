@@ -1,3 +1,9 @@
-Introduction OpenGL
+# Introduction OpenGL
 
-Video Demonstration: https://youtu.be/q11jGuc9Bhk
+## Auteur
+
+- Pouget Thibault
+
+## Livrable
+
+Video Démonstration: https://youtu.be/3mhFKZAWfTA

@@ -269,15 +269,16 @@ int main()
     ModelRenderer worldRenderer;
 
     std::vector<KeyFrame> keyFrames;
-    keyFrames.push_back({10.0f, glm::vec3(-5.5f, 5.8f, 1.5f), glm::vec3(-8.5f, 5.5f, 4.3f)});
-    keyFrames.push_back({15.0f, glm::vec3(-12.6f, 4.9f, 1.6f), glm::vec3(-14.0f, 4.8f, 7.9f)});
-    keyFrames.push_back({20.0f, glm::vec3(-15.1f, 4.3f, 4.1f), glm::vec3(-15.8f, 4.0f, 6.0f)});
-    keyFrames.push_back({30.0f, glm::vec3(-14.0f, 4.2f, 5.9f), glm::vec3(-15.8f, 3.7f, 6.0f)});
-    keyFrames.push_back({35.0f, glm::vec3(-11.6f, 4.8f, 4.5f), glm::vec3(-10.4f, 4.6f, 7.9f)});
-    keyFrames.push_back({38.0f, glm::vec3(-8.1f, 3.9f, 10.5f), glm::vec3(-10.4f, 3.3f, 13.6f)});
-    keyFrames.push_back({40.0f, glm::vec3(-9.0f, 3.9f, 15.1f), glm::vec3(-13.54f, 2.44f, 21.19f)});
-    keyFrames.push_back({44.0f, glm::vec3(-12.82f, 3.9f, 16.35f), glm::vec3(-12.82f, 3.9f, 21.23f)});
-    keyFrames.push_back({48.0f, glm::vec3(-16.32f, 4.5f, 14.31f), glm::vec3(-12.82f, 3.9f, 20.23f)});
+    keyFrames.push_back({5.0f, glm::vec3(-5.5f, 5.8f, 1.5f), glm::vec3(-8.5f, 5.5f, 4.3f)});
+    keyFrames.push_back({9.0f, glm::vec3(-6.3f, 3.7f, 3.8f), glm::vec3(-8.6f, 4.0f, 4.9f)});
+    keyFrames.push_back({14.0f, glm::vec3(-12.6f, 4.9f, 1.6f), glm::vec3(-14.0f, 4.8f, 7.9f)});
+    keyFrames.push_back({19.0f, glm::vec3(-15.1f, 4.3f, 4.1f), glm::vec3(-15.8f, 4.0f, 6.0f)});
+    keyFrames.push_back({29.0f, glm::vec3(-14.0f, 4.2f, 5.9f), glm::vec3(-15.8f, 3.7f, 6.0f)});
+    keyFrames.push_back({34.0f, glm::vec3(-11.6f, 4.8f, 4.5f), glm::vec3(-10.4f, 4.6f, 7.9f)});
+    keyFrames.push_back({37.0f, glm::vec3(-8.1f, 3.9f, 10.5f), glm::vec3(-10.4f, 3.3f, 13.6f)});
+    keyFrames.push_back({39.0f, glm::vec3(-9.0f, 3.9f, 15.1f), glm::vec3(-13.54f, 2.44f, 21.19f)});
+    keyFrames.push_back({43.0f, glm::vec3(-12.82f, 3.9f, 16.35f), glm::vec3(-12.82f, 3.9f, 21.23f)});
+    keyFrames.push_back({47.0f, glm::vec3(-16.32f, 4.5f, 14.31f), glm::vec3(-12.82f, 3.9f, 20.23f)});
     KeyFrameAnimation::SetKeyFrames(keyFrames);
     bool useKeyFrames = true;
 
@@ -417,7 +418,7 @@ int main()
         glm::mat4 bluePortal2Transform = glm::rotate(glm::translate(glm::mat4(1.0f), bluePortal2Position), bluePortal2Rotation, glm::vec3(0.0f, 1.0f, 0.0f));
         glm::mat4 orangePortal2Transform = glm::rotate(glm::translate(glm::mat4(1.0f), orangePortal2Position), orangePortal2Rotation, glm::vec3(0.0f, 1.0f, 0.0f));
 
-        if (glfwGetTime() < 38.0f) PortalRenderer::Render(bluePortalTransform, orangePortalTransform, view, camera.GetCamera().getProjectionMatrix(), oitFBO, oitAccumShader, oitCompositeShader);
+        if (glfwGetTime() < 37.0f) PortalRenderer::Render(bluePortalTransform, orangePortalTransform, view, camera.GetCamera().getProjectionMatrix(), oitFBO, oitAccumShader, oitCompositeShader);
         else PortalRenderer::Render(bluePortal2Transform, orangePortal2Transform, view, camera.GetCamera().getProjectionMatrix(), oitFBO, oitAccumShader, oitCompositeShader);
 
         worldRenderer.EndFrame(oitFBO, oitAccumShader, oitCompositeShader);
@@ -479,6 +480,9 @@ int main()
     PortalRenderer::Shutdown();
     worldRenderer.ShutDown();
 
+    oitAccumShader.reset();
+    oitCompositeShader.reset();
+    oitFBO.reset();
     cubeVao.reset();
     cubeIbo.reset();
     cubeVbo.reset();

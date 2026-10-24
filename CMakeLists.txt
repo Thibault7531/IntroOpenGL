@@ -3,6 +3,14 @@ project(IntroOpenGL)
 
 set(CMAKE_CXX_STANDARD 23)
 
+set(CMAKE_C_FLAGS "-std=c11")
+set(CMAKE_C_FLAGS_DEBUG "-O0 -g")
+set(CMAKE_C_FLAGS_RELEASE "-O2")
+
+set(CMAKE_CXX_FLAGS "")
+set(CMAKE_CXX_FLAGS_DEBUG "-O0 -g")
+set(CMAKE_CXX_FLAGS_RELEASE "-O2")
+
 add_compile_options(-mavx2)
 
 # Libraries
